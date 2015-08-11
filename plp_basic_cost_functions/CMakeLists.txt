@@ -29,6 +29,7 @@ add_library(${PROJECT_NAME}
     src/oscillation_cost_function.cpp
     src/prefer_forward_cost_function.cpp
     src/costmap_model.cpp
+    src/velocity_costmaps_cost_function.cpp
 ) 
 target_link_libraries(${PROJECT_NAME}  plugin_local_planner)
 
