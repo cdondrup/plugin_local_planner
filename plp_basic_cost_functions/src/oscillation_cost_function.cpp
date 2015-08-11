@@ -49,9 +49,9 @@ OscillationCostFunction::~OscillationCostFunction() {
   prev_stationary_pos_ = Eigen::Vector3f::Zero();
 }
 
-void OscillationCostFunction::initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util)
+void OscillationCostFunction::initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util)
 {
-    plugin_local_planner::TrajectoryCostFunction::initialize(name, planner_util);
+    plugin_local_planner::TrajectoryCostFunction::initialize(base_name, plugin_name, planner_util);
 
     oscillation_reset_dist_ = .05; // TODO: Load this dynamically
     oscillation_reset_angle_ = .2; // TODO: Load this dynamically

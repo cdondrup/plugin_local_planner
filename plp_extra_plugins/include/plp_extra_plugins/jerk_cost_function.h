@@ -47,7 +47,7 @@ public:
 
   JerkCostFunction() {}
   
-  void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util);
+  void initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util);
   
   virtual void reset() { init_ = false; }
   

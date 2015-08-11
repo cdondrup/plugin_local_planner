@@ -15,8 +15,8 @@ namespace plp_extra_plugins {
 class TurnFirstCostFunction : public plugin_local_planner::TrajectoryCostFunction {
 public:
 
-  void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util) {
-    TrajectoryCostFunction::initialize(name, planner_util);
+  void initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util) {
+    TrajectoryCostFunction::initialize(base_name, plugin_name, planner_util);
     
     ros::NodeHandle nh("~/" + name_);
     nh.param("max_trans_angle", max_trans_angle_, M_PI);

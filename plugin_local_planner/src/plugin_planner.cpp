@@ -187,7 +187,9 @@ void move_parameter(ros::NodeHandle& nh, std::string old_name,
           if(type.find("::") == std::string::npos)
           {
               if(plugin_loader_.isClassAvailable("plp_basic_cost_functions::"+type))
-                  type = "plp_basic_cost_functions::" + type;              
+                  type = "plp_basic_cost_functions::" + type;
+              else if(plugin_loader_.isClassAvailable("plp_extra_plugins::"+type))
+                  type = "plp_extra_plugins::" + type;
               else if(plugin_loader_.isClassAvailable("dwa_plugins::"+type))
                   type = "dwa_plugins::"+type;
           }
@@ -196,7 +198,7 @@ void move_parameter(ros::NodeHandle& nh, std::string old_name,
 
           CostFunctionPointer plugin = plugin_loader_.createInstance(type);
           critics_.push_back(plugin);
-          plugin->initialize(name + "/" + pname, planner_util); 
+          plugin->initialize(name, pname, planner_util);
           if(scale>0.0)
             plugin->setScale(scale);
           

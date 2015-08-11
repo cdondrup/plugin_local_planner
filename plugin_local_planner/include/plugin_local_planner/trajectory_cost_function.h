@@ -22,8 +22,10 @@ namespace plugin_local_planner {
 class TrajectoryCostFunction {
 public:
 
-  virtual void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util) {
-    name_ = name;
+  virtual void initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util) {
+    base_name_ = base_name;
+    plugin_name_ = plugin_name;
+    name_ = base_name + "/" + plugin_name;
     planner_util_ = planner_util;
     costmap_ = planner_util->getCostmap();
 
@@ -72,7 +74,7 @@ public:
   virtual ~TrajectoryCostFunction() {}
 
 protected:
-  std::string name_;
+  std::string name_, base_name_, plugin_name_;
   plugin_local_planner::LocalPlannerUtil *planner_util_;
   costmap_2d::Costmap2D* costmap_; 
   double scale_;

@@ -7,7 +7,7 @@ namespace plp_basic_cost_functions {
 
 class PathAlignCostFunction: public OffsetGridCostFunction {
 public:
-  void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util);
+  void initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util);
   bool prepare(tf::Stamped<tf::Pose> global_pose,
       tf::Stamped<tf::Pose> global_vel,
       std::vector<geometry_msgs::Point> footprint_spec);

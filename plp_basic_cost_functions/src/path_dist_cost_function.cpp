@@ -9,6 +9,7 @@ namespace plp_basic_cost_functions {
 bool PathDistCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
       tf::Stamped<tf::Pose> global_vel,
       std::vector<geometry_msgs::Point> footprint_spec) {
+  update_parameters();
   map_.resetPathDist();
   map_.setTargetCells(*costmap_, target_poses_);
   return true;

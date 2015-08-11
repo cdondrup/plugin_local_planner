@@ -16,9 +16,9 @@ using plugin_local_planner::Trajectory;
 
 namespace plp_basic_cost_functions {
 
-void PreferForwardCostFunction::initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util)
+void PreferForwardCostFunction::initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util)
 {
-    plugin_local_planner::TrajectoryCostFunction::initialize(name, planner_util);
+    plugin_local_planner::TrajectoryCostFunction::initialize(base_name, plugin_name, planner_util);
     penalty_ = 1.0;
 }
 

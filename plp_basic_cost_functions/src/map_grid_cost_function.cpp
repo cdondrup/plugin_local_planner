@@ -41,21 +41,32 @@ using plugin_local_planner::Trajectory;
 
 namespace plp_basic_cost_functions {
 
-void MapGridCostFunction::initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util) {
-    plugin_local_planner::TrajectoryCostFunction::initialize(name, planner_util);
+void MapGridCostFunction::initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util) {
+    plugin_local_planner::TrajectoryCostFunction::initialize(base_name, plugin_name, planner_util);
     stop_on_failure_ = true;
 
-    ros::NodeHandle nh("~/" + name_);
+    update_parameters();
+        
+    map_.sizeCheck(costmap_->getSizeInCellsX(), costmap_->getSizeInCellsY());
+}
+
+bool MapGridCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
+                                  tf::Stamped<tf::Pose> global_vel,
+                                  std::vector<geometry_msgs::Point> footprint_spec) {
+    update_parameters();
+    return true;
+}
+
+void MapGridCostFunction::update_parameters(){
+    ros::NodeHandle nh("~/" + base_name_);
     std::string aggro_str;
     nh.param("aggregation_type", aggro_str, std::string("last"));
-    if(aggro_str=="last") 
+    if(aggro_str=="last")
         aggregationType_ = Last;
     else if(aggro_str=="sum")
         aggregationType_ = Sum;
     else if(aggro_str=="product")
         aggregationType_ = Product;
-        
-    map_.sizeCheck(costmap_->getSizeInCellsX(), costmap_->getSizeInCellsY());
 }
 
 float MapGridCostFunction::getCost(unsigned int px, unsigned int py) {

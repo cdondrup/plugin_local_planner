@@ -6,28 +6,20 @@ PLUGINLIB_EXPORT_CLASS(plp_basic_cost_functions::GoalAlignCostFunction, plugin_l
 
 namespace plp_basic_cost_functions {
 
-void GoalAlignCostFunction::initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util)
+void GoalAlignCostFunction::initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util)
 {
-    MapGridCostFunction::initialize(name, planner_util);
+    MapGridCostFunction::initialize(base_name, plugin_name, planner_util);
     stop_on_failure_ = false;
-    ros::NodeHandle nh("~/" + name_);
-    std::string key;
-    if (nh.searchParam("forward_point_distance", key))
-    {
-        nh.getParam(key, xshift_);
-        yshift_ = 0.0;
-    }else{
-        xshift_ = 0.325;
-        yshift_ = 0.0;
-    }
-    shift_d_ = xshift_;
-    
+
+    update_parameters();
+
     quit_within_radius_ = false;
 }
 
 bool GoalAlignCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
       tf::Stamped<tf::Pose> global_vel,
       std::vector<geometry_msgs::Point> footprint_spec) {
+    update_parameters();
     map_.resetPathDist();
   
     global_pose_ = global_pose;
@@ -49,6 +41,20 @@ bool GoalAlignCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
   
     map_.setLocalGoal(*costmap_, target_poses_);
     return true;
+}
+
+void GoalAlignCostFunction::update_parameters() {
+    ros::NodeHandle nh("~/" + base_name_);
+    std::string key;
+    if (nh.searchParam("forward_point_distance", key))
+    {
+        nh.getParam(key, xshift_);
+        yshift_ = 0.0;
+    }else{
+        xshift_ = 0.325;
+        yshift_ = 0.0;
+    }
+    shift_d_ = xshift_;
 }
 
 

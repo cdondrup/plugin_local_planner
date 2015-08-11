@@ -56,7 +56,7 @@ public:
   ObstacleCostFunction(): world_model_(NULL) {}
   ~ObstacleCostFunction();
 
-  virtual void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util);
+  virtual void initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util);
   bool prepare(tf::Stamped<tf::Pose> global_pose,
       tf::Stamped<tf::Pose> global_vel,
       std::vector<geometry_msgs::Point> footprint_spec);
@@ -75,6 +75,7 @@ public:
   virtual float getCost(unsigned int cx, unsigned int cy){ return costmap_->getCost(cx, cy); }
 
 private:
+  void update_parameters();
   std::vector<geometry_msgs::Point> footprint_spec_;
   plp_basic_cost_functions::WorldModel* world_model_;
   bool sum_scores_;

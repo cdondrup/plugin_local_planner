@@ -75,10 +75,10 @@ public:
 
   MapGridCostFunction() : stop_on_failure_(true), aggregationType_(Last) {}
 
-  virtual void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util);
+  virtual void initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util);
   virtual bool prepare(tf::Stamped<tf::Pose> global_pose,
 		       tf::Stamped<tf::Pose> global_vel,
-		       std::vector<geometry_msgs::Point> footprint_spec) = 0;
+               std::vector<geometry_msgs::Point> footprint_spec);
 
   virtual double scoreTrajectory(plugin_local_planner::Trajectory &traj);
   virtual double scoreCell(double px, double py, double pth);
@@ -94,6 +94,8 @@ public:
   }
 
 protected:
+  void update_parameters();
+
   std::vector<geometry_msgs::PoseStamped> target_poses_;
   double goal_x_, goal_y_;
   bool stop_on_failure_;

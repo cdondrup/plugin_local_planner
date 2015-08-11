@@ -41,8 +41,8 @@ using plugin_local_planner::Trajectory;
 
 namespace plp_extra_plugins {
 
-void PathOrientationCostFunction::initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util) {
-    TrajectoryCostFunction::initialize(name, planner_util);
+void PathOrientationCostFunction::initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util) {
+    TrajectoryCostFunction::initialize(base_name, plugin_name, planner_util);
 
     ros::NodeHandle nh("~/" + name_);
     nh.param("front_offset_angle", front_offset_angle_, 0.0);

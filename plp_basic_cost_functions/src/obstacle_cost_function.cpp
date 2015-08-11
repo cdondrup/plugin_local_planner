@@ -46,15 +46,12 @@ using plugin_local_planner::Trajectory;
 
 namespace plp_basic_cost_functions {
 
-void ObstacleCostFunction::initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util) {
-    plugin_local_planner::TrajectoryCostFunction::initialize(name, planner_util);
+void ObstacleCostFunction::initialize(std::string base_name, std::string plugin_name, plugin_local_planner::LocalPlannerUtil *planner_util) {
+    plugin_local_planner::TrajectoryCostFunction::initialize(base_name, plugin_name, planner_util);
 
     world_model_ = new plp_basic_cost_functions::CostmapModel(*costmap_);
 
-    ros::NodeHandle nh("~/" + name_);
-    nh.param("sum_scores", sum_scores_, false);
-    nh.param("max_scaling_factor", max_scaling_factor_, 0.2);
-    nh.param("scaling_speed", scaling_speed_, 0.25);
+    update_parameters();
 }
 
 ObstacleCostFunction::~ObstacleCostFunction() {
@@ -68,7 +65,15 @@ bool ObstacleCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
       tf::Stamped<tf::Pose> global_vel,
       std::vector<geometry_msgs::Point> footprint_spec) {
   footprint_spec_ = footprint_spec;
+  update_parameters();
   return true;
+}
+
+void ObstacleCostFunction::update_parameters(){
+    ros::NodeHandle nh("~/" + base_name_);
+    nh.param("sum_scores", sum_scores_, false);
+    nh.param("max_scaling_factor", max_scaling_factor_, 0.2);
+    nh.param("scaling_speed", scaling_speed_, 0.25);
 }
 
 double ObstacleCostFunction::scoreTrajectory(Trajectory &traj) {
