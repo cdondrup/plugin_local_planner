@@ -64,6 +64,9 @@ bool VelocityCostmapsCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
                                            tf::Stamped<tf::Pose> global_vel,
                                            std::vector<geometry_msgs::Point> footprint_spec) {
     update_parameters();
+    if(pub.getNumSubscribers()){
+        pub.publish(pub_map_);
+    }
     return true;
 }
 
@@ -89,8 +92,7 @@ double VelocityCostmapsCostFunction::scoreTrajectory(Trajectory &traj) {
 
         //  ROS_INFO("Speed: x: %f, theta: %f, index: (%d, %d) = %d -> costs: %.2f", traj.xv_, traj.thetav_, x, y, index, cost);
         if(pub.getNumSubscribers()){
-            pub_map_.data[index] = int(cost) == 0 ? 5 : int(cost);
-            pub.publish(pub_map_);
+            pub_map_.data[index] = 98; // Just for visualisation, these costs have no effect on the planning
         }
         VelocityCostmapsCostFunction::check_map();
     }
@@ -99,21 +101,8 @@ double VelocityCostmapsCostFunction::scoreTrajectory(Trajectory &traj) {
 
 void VelocityCostmapsCostFunction::callback(const nav_msgs::OccupancyGrid::ConstPtr &msg){
     boost::mutex::scoped_lock lock(mutex);
-//    if(s.compare(0, 1, "0") == 0) {
-//        costs_xv_ = 100;
-//        costs_tv_ = 100;
-//    } else {
-//        costs_xv_ = 0;
-//        costs_tv_ = 0;
-//    }
     map_ = *msg;
     pub_map_ = map_;
-
-//    unsigned int index = VelocityCostmapsCostFunction::getIndex(map_.info.width/2-1, map_.info.height/2-1, map_.info.width);
-//    ROS_INFO_STREAM("Map: width: "<<map_.info.width<<" height: "<< map_.info.height << " resolution: " << map_.info.resolution << " index: "<<index<<" value: "<<int(map_.data[index]));
-//    map_.data[index] = 98;
-//    pub.publish(map_);
-
 }
 } /* namespace plp_basic_cost_functions */
 
