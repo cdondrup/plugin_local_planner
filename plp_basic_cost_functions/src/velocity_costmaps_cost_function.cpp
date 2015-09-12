@@ -64,7 +64,7 @@ bool VelocityCostmapsCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
                                            tf::Stamped<tf::Pose> global_vel,
                                            std::vector<geometry_msgs::Point> footprint_spec) {
     update_parameters();
-    if(pub.getNumSubscribers()){
+    if(pub.getNumSubscribers() && map_.info.width != 0){
         pub.publish(pub_map_);
     }
     return true;
@@ -76,9 +76,9 @@ void VelocityCostmapsCostFunction::update_parameters(){
 }
 
 double VelocityCostmapsCostFunction::scoreTrajectory(Trajectory &traj) {
+    boost::mutex::scoped_lock lock(mutex);
     double cost = 0;
     if (sub.getNumPublishers() && map_.info.width != 0 && map_.info.height != 0) {
-        boost::mutex::scoped_lock lock(mutex);
         double xv = traj.xv_ * 100;
         double tv = traj.thetav_ * M_PI;
         int x = xv * cos(tv);
@@ -87,8 +87,8 @@ double VelocityCostmapsCostFunction::scoreTrajectory(Trajectory &traj) {
         unsigned int index = VelocityCostmapsCostFunction::getIndex((x+(map_.info.width/2))-1, (y+(map_.info.height/2))-1, map_.info.width);
         costs_xv_ = double(map_.data[index]);
         costs_tv_ = double(map_.data[index]);
-        cost = traj.xv_ * costs_xv_;
-        cost += fabs(traj.thetav_ * costs_tv_);
+        cost = fmax(traj.xv_ * costs_xv_,fabs(traj.thetav_ * costs_tv_));
+//        cost += fabs(traj.thetav_ * costs_tv_);
 
         //  ROS_INFO("Speed: x: %f, theta: %f, index: (%d, %d) = %d -> costs: %.2f", traj.xv_, traj.thetav_, x, y, index, cost);
         if(pub.getNumSubscribers()){

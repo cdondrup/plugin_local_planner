@@ -79,7 +79,7 @@ private:
   }
 
   inline void check_map() {
-      if(ros::Time::now() > map_.header.stamp + ros::Duration(10))
+      if(ros::Time::now() > map_.header.stamp + ros::Duration(2))
           map_.info.width = 0;
   }
 
